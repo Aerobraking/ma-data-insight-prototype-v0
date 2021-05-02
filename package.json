@@ -1,0 +1,21 @@
+{
+  "name": "electron-app1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "9.0.5",
+    "electron-rebuild": "^1.11.0"
+  },
+  "dependencies": {
+    "@phanmn/plain-draggable": "^2.5.14",
+    "drivelist": "^9.0.2",
+    "panzoom": "^9.4.2"
+  }
+}
