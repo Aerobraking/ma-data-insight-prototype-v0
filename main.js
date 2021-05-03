@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const drivelist = require('drivelist');
+const { ipcMain } = require('electron')
 
 let driveListFinal=[];
 
@@ -52,6 +53,18 @@ async function* getFiles(dir) {
   })()
  
 
+
+
+/**
+ * Create drag event to desktop
+ */
+ ipcMain.handle('ondragstart', (event, filePath) => {
+    console.log("BACKEND DESKTOP DRAG START");
+    event.sender.startDrag({
+      file: filePath,
+      icon: 'D:/git projects/electron-app1/drag.jpg'
+    })
+  })
 
 
 function createWindow() {

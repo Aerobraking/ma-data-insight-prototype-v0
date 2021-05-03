@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@phanmn/plain-draggable": "^2.5.14",
+    "@simonwep/selection-js": "^2.0.3",
     "drivelist": "^9.0.2",
     "panzoom": "^9.4.2"
   }

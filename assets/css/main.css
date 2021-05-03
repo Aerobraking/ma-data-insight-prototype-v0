@@ -21,8 +21,14 @@ body {
     padding: 0;
 }
 
+#drag{
+  width: 200px;
+  height: 200px;
+  background-color: blueviolet;
+}
+
 .mydiv {
-    /* position: absolute; */
+ position: absolute; 
  /* z-index: 9; */
  height: 100px;
  width: 100px;
@@ -31,6 +37,18 @@ body {
     text-align: center;
   }
   
+  .selection-area {
+    background: rgba(46, 115, 252, 0.11);
+    border: 2px solid rgba(98, 155, 255, 0.81);
+    border-radius: 0.1em;
+}
+
+ div.selected {
+    background: hsl(100, 80%, 65%);
+    border: 2px solid rgba(0, 0, 0, 0.075);
+} 
+
+
   .mydivheader {
     padding: 10px;
     cursor: move;
