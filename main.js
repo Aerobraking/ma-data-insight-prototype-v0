@@ -46,11 +46,11 @@ async function* getFiles(dir) {
   }
 }
 
-(async () => {
-    for await (const f of getFiles('D:/Games/')) {
-      console.log(f);
-    }
-  })()
+// (async () => {
+//     for await (const f of getFiles('D:/Games/')) {
+//       console.log(f);
+//     }
+//   })()
  
 
 

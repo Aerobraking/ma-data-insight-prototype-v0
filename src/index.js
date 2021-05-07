@@ -13,6 +13,7 @@ const panzoom = require('panzoom');
 
 // used for dragging
 let startPosition;
+let startPositionRel;
 
 
 
@@ -36,6 +37,8 @@ var panzoomInstance = panzoom(element, {
     }
 })
 
+var objects = new Array();
+
 
 /**
  * File drop. Erstellt div container, die direkt auch draggable sind.
@@ -43,6 +46,8 @@ var panzoomInstance = panzoom(element, {
 document.addEventListener('drop', (event) => {
     event.preventDefault();
     event.stopPropagation();
+
+    let offset = 0;
 
     for (const f of event.dataTransfer.files) {
         // Using the path attribute to get absolute file path
@@ -57,16 +62,16 @@ document.addEventListener('drop', (event) => {
         // correct coordinates by using the scaling factor of the zooming.
         var x = (event.clientX - rect.left) / scaling; //x position within the element.
         var y = (event.clientY - rect.top) / scaling;  //y position within the element.
-
+        console.log("xOrig: " + (event.clientX - rect.left) + " yOrig: " + (event.clientY - rect.top));
+        console.log("scaling: " + scaling);
+        console.log("x: " + x + " y: " + y);
         div.className = 'mydiv select';
 
         div.innerHTML = f.path;
 
         document.getElementById('zoomPanel').appendChild(div);
 
-
-
-        let dragg = new PlainDraggable(div);
+        let dragg = new PlainDraggable(div, { left: 0, top: 0 });
         dragg.containment = { left: -50000, top: -50000, width: '100000', height: '100000' };
         dragg.onDragStart = function (pointerXY) {
 
@@ -89,11 +94,21 @@ document.addEventListener('drop', (event) => {
              * starts for real, we cancel the selection. Otherwise the rectangle would appear.
              */
             selection.cancel();
-            console.log("onMoveStart");
+            console.log("onMoveStart position: ");
+            console.log(position);
+            console.log();
             startPosition = {
                 left: position.left,
                 top: position.top
             };
+
+            for (const dragEntry of objects) {
+                dragEntry.startPositionRel = {
+                    left: position.left,
+                    top: position.top
+                };
+            }
+
         };
         dragg.onDrag = function (position) {
             // Adjust moving length
@@ -102,8 +117,21 @@ document.addEventListener('drop', (event) => {
 
             if (startPosition) {
                 // Adjust moving length
-                position.left = startPosition.left + (position.left - startPosition.left) / scaling;
-                position.top = startPosition.top + (position.top - startPosition.top) / scaling;
+                let addLeft = (position.left - startPosition.left) / scaling;
+                let addTop = (position.top - startPosition.top) / scaling;
+
+                position.left = startPosition.left + addLeft;
+                position.top = startPosition.top + addTop;
+
+                console.log("dateien: " + objects.length);
+                for (const dragEntry of objects) {
+                    console.log("move instance: left: " + addLeft);
+                    //dragEntry.left = dragEntry.startPositionRel.left + addLeft;
+                  //  dragEntry.top = dragEntry.startPositionRel.top + addTop;
+                }
+
+
+
             }
 
         };
@@ -111,13 +139,16 @@ document.addEventListener('drop', (event) => {
             console.log("onDragEnd");
             // Adjust moving length
             startPosition = null;
+            startPositionRel = null;
         };
 
-        /**
-         * Apply after dragg instance creation, because the translate will be modified in the creation.
-         */
-        div.style.transform = "translate(" + x + "px, " + y + "px)";
+
+        dragg.left += x + offset;
+        dragg.top += y;
+        offset += 150;
+        objects.push(dragg);
     }
+
 });
 
 document.addEventListener('dragover', (e) => {
@@ -285,10 +316,10 @@ selection = new SelectionArea({
  * Drag from Window to Desktop
  */
 document.getElementById("drag").ondragstart = (event) => {
-  
-   
+
+
     console.log("DESKTOP DRAG START ");
     console.log(event.target.getAttribute("filepath"));
     event.preventDefault();
-    ipcRenderer.invoke('ondragstart', event.target.getAttribute("filepath")); 
+    ipcRenderer.invoke('ondragstart', event.target.getAttribute("filepath"));
 };
